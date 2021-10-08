@@ -1,0 +1,85 @@
+/**
+ * DokuWiki Plugin Code HighlightJS
+ */
+
+pre.code, pre.file { display: block; background-color: #333; color: #fff; } /*#272822*/
+
+div.code-title {
+    margin-bottom: 0;
+    margin-left: 0.5em;
+    padding: 0;
+    font-size: 90%;
+    font-style: italic;
+}
+
+div.code-title + pre {
+    margin-top: 0 !important;
+}
+
+/*Wrap whitespace by default*/
+pre.hljs {
+    white-space: pre-wrap;
+}
+
+.code-nowrap {
+    white-space: pre !important;
+}
+
+.code-toolbar,
+pre.code,
+pre.file,
+pre.hljs {
+    position: relative;
+    clear: both;
+}
+
+.codeblock-file > dt > a {
+    float: right;
+    margin-right: 5px;
+}
+
+.code-toolbar.copied:before,
+pre.code.copied:before, 
+pre.file.copied:before, 
+pre.prettyprint.copied:before {
+   content: "Copied!";
+   text-align: right;
+   right: 36px;
+   top: 8px;
+   position: absolute;
+   color: #fff;
+   z-index: 100;
+   font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+   font-size: 13px;
+}
+
+.code-toolbar:hover .codeclipboard_button,
+pre.prettyprint:hover .codeclipboard_button,
+pre.code:hover .codeclipboard_button,
+pre.file:hover .codeclipboard_button {
+    opacity: .7;
+}
+
+/*Copy to clipboard button*/
+div.codeclipboard_button {
+ width: 24px;
+ height: 24px;
+ position: absolute;
+ right: 5px;
+ top: 5px;
+ z-index: 100;
+ background: url('/lib/tpl/bootstrap3/iconify.php?icon=mdi-content-copy.svg&color=%23fff');
+ background-size: cover;
+ opacity: 0;
+ transition: 0.2s ease-in-out;
+}
+
+.code-toolbar:hover .codeclipboard_button:hover,
+pre.prettyprint:hover .codeclipboard_button:hover,
+pre.code:hover .codeclipboard_button:hover,
+pre.file:hover .codeclipboard_button:hover
+{
+  cursor: pointer;
+  opacity: 1;
+  transform: scale(1.2);
+}
