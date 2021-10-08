@@ -38,6 +38,10 @@ pre.hljs {
     margin-right: 5px;
 }
 
+dl.codeblock-file {
+    margin-bottom: 0;
+}
+
 .code-toolbar.copied:before,
 pre.code.copied:before, 
 pre.file.copied:before, 
