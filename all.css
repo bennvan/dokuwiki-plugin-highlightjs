@@ -2,7 +2,7 @@
  * DokuWiki Plugin Code HighlightJS
  */
 
-pre.code, pre.file { display: block; background-color: #333; color: #fff; } /*#272822*/
+pre.code, pre.file { display: block; background-color: #23241f; color: #f8f8f2; }
 
 div.code-title {
     margin-bottom: 0;
