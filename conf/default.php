@@ -7,4 +7,4 @@
  */
 
 $conf['skin']           = 'monokai-sublime';
-
+$conf['editbutton']     = 1;

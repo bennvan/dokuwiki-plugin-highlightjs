@@ -13,7 +13,7 @@ if (!defined('DOKU_INC')) die();
 class syntax_plugin_codehighlightjs_code extends DokuWiki_Syntax_Plugin
 {
     /** @var int counts the code and file blocks, used to provide download links */
-    protected $_codeblock = 0;
+    private static $_codeblock = 0;
 
     public function getType()
     {   // Syntax Type
@@ -26,15 +26,6 @@ class syntax_plugin_codehighlightjs_code extends DokuWiki_Syntax_Plugin
     }
 
     /**
-     * Return the format of the renderer
-     *
-     * @returns string 'code'
-     */
-    public function getFormat() {
-        return 'code';
-    }
-
-    /**
      * Connect pattern to lexer
      */
     protected $mode, $pattern;
@@ -44,27 +35,14 @@ class syntax_plugin_codehighlightjs_code extends DokuWiki_Syntax_Plugin
         return 199; // < native 'code' mode (=200)
     }
 
-    public function preConnect()
-    {
-        // Plugin name
-        $this->mode = substr(get_class($this), 7);
-        // DokuWiki original syntax patterns
-        $this->pattern[1] = '<code\b.*?>(?=.*?</code>)';
-        $this->pattern[4] = '</code>';
-        $this->pattern[11] = '<file\b.*?>(?=.*?</file>)';
-        $this->pattern[14] = '</file>';
-    }
-
     public function connectTo($mode)
     {
-        $this->Lexer->addEntryPattern($this->pattern[1], $mode, $this->mode);
-        $this->Lexer->addEntryPattern($this->pattern[11], $mode, $this->mode);
+        $this->Lexer->addEntryPattern('<code\b(?=.*</code>)', $mode, 'plugin_codehighlightjs_code');
     }
 
     public function postConnect()
     {
-        $this->Lexer->addExitPattern($this->pattern[4], $this->mode);
-        $this->Lexer->addExitPattern($this->pattern[14], $this->mode);
+        $this->Lexer->addExitPattern('</code>', 'plugin_codehighlightjs_code');
     }
 
 
@@ -73,8 +51,9 @@ class syntax_plugin_codehighlightjs_code extends DokuWiki_Syntax_Plugin
      */
     public function handle($match, $state, $pos, Doku_Handler $handler)
     {
-        if ($state == DOKU_LEXER_ENTER) {
-                list($params, $title) = explode('|', substr($match, 5, -1), 2);
+        if ($state == DOKU_LEXER_UNMATCHED) {
+                $matches = explode('>',$match,2);
+                list($params, $title) = explode('|', $matches[0], 2);
 
                 if ($title) {
                     $opts['title'] = $title;
@@ -103,16 +82,9 @@ class syntax_plugin_codehighlightjs_code extends DokuWiki_Syntax_Plugin
                 }
 
                 $opts['class'] = 'hljs';
-
-                return $data = [$match, $state, $pos, $opts];
+                $text = $matches[1];
             }
-        if ($state == DOKU_LEXER_UNMATCHED) {
-                return $data = [$match, $state, $pos];
-            }
-        if ($state == DOKU_LEXER_EXIT) {
-                return $data = [$match, $state, $pos];
-        }
-        return false;
+        return array($match, $state, $pos, $opts, $text);
     }
 
     /**
@@ -126,23 +98,31 @@ class syntax_plugin_codehighlightjs_code extends DokuWiki_Syntax_Plugin
 
         if (empty($data)) return false;
 
-        list($match, $state, $pos, $opts) = $data;
-
-        global $code_filename;
+        list($match, $state, $pos, $opts, $text) = $data;
 
         /** @var Doku_Renderer_metadata $renderer */
         if ($mode !== 'xhtml'){
-            if ($state == DOKU_LEXER_ENTER) {
-                $code_filename = $opts['filename'];
-            }
+            // if ($state == DOKU_LEXER_ENTER) {
+                
+            // }
             if ($state == DOKU_LEXER_UNMATCHED) {
-                $renderer->file($match, null, $code_filename);
+                $code_filename = $opts['filename'];
+                $renderer->file($text, null, $opts['filename']);
             }
             return false;
         } 
         
         /** @var Doku_Renderer_xhtml $renderer */
-        if ($state == DOKU_LEXER_ENTER) {
+        if ($state == DOKU_LEXER_ENTER){
+            // Place the edit buttons
+            if ($this->getConf('editbutton') && defined('SEC_EDIT_PATTERN')) { // for DokuWiki Greebo and more recent versions
+                $renderer->startSectionEdit($pos, array('target' => 'plugin_codehighlightjs', 'name' => $state));
+            } else {
+                $renderer->startSectionEdit($pos, 'plugin_codehighlightjs', $state);
+            }
+        }
+
+        if ($state == DOKU_LEXER_UNMATCHED) {
             $code_filename = $opts['filename'];
             if($code_filename) {
                 unset($opts['filename']);
@@ -160,7 +140,7 @@ class syntax_plugin_codehighlightjs_code extends DokuWiki_Syntax_Plugin
                     exportlink(
                         $ID,
                         'code',
-                        array('codeblock' => $offset + $this->_codeblock)
+                        array('codeblock' => $offset + $this::$_codeblock)
                     ) . '" title="' . $lang['download'] . '" class="' . $class . '">';
                 $markup .= hsc($code_filename);
                 $markup .= '</a></dt>'.DOKU_LF.'<dd>';
@@ -174,18 +154,8 @@ class syntax_plugin_codehighlightjs_code extends DokuWiki_Syntax_Plugin
 
             // start the toolbar and code
             $markup .= '<div class="code-toolbar">';
-            $markup .= '<pre class="'.hsc(implode(' ', $opts)).'">';
-
-            $renderer->doc .= $markup;
-            return true;
-        }
-        if ($state == DOKU_LEXER_UNMATCHED) {
-            $renderer->doc .= $renderer->_xmlEntities($match);
-            return true;
-        }
-
-        if ($state == DOKU_LEXER_EXIT) {
-            $markup = '</pre></div>';
+            $markup .= '<pre class="'.hsc(implode(' ', $opts)).'">'.$renderer->_xmlEntities($text).'</pre>'.DOKU_LF;
+            $markup .= '</div>';
 
             if($code_filename) {
                 $markup .= '</dd></dl>'.DOKU_LF;
@@ -193,9 +163,13 @@ class syntax_plugin_codehighlightjs_code extends DokuWiki_Syntax_Plugin
 
             $renderer->doc .= $markup;
 
-            $this->_codeblock++;
-            return true;
+            $this::$_codeblock++;
         }
-        
+        if ($state == DOKU_LEXER_EXIT){
+            if ($this->getConf('editbutton')){
+                $renderer->finishSectionEdit($pos + strlen($match));
+            }
+        }
+        return true;
     }
 }

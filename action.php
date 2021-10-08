@@ -17,6 +17,8 @@ class action_plugin_codehighlightjs extends DokuWiki_Action_Plugin
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'insert_button', array());
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'insert_button_inline', array());
         $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'load_highlightjs');
+        $controller->register_hook('HTML_SECEDIT_BUTTON', 'BEFORE', $this, '_secedit_button');
+        $controller->register_hook('HTML_EDIT_FORMSELECTION', 'BEFORE', $this, '_editform');
     }
 
     /**
@@ -68,6 +70,38 @@ class action_plugin_codehighlightjs extends DokuWiki_Action_Plugin
                 'type'    => 'text/css',
                 'href'    => $base_url.'styles/'.$skin.'.min.css',
         );
+    }
+
+    /**
+     * Edit Form
+     *
+     * @param  Doku_Event  &$event
+     */
+    public function _editform(Doku_Event $event)
+    {
+
+        if ($event->data['target'] !== 'plugin_codehighlightjs') {
+            return;
+        }
+
+        $event->data['target'] = 'section';
+        return;
+    }
+
+    /**
+     * Set Section Edit button
+     *
+     * @param  Doku_Event  &$event
+     */
+    public function _secedit_button(Doku_Event $event)
+    {
+        global $lang;
+
+        if ($event->data['target'] !== 'plugin_codehighlightjs') {
+            return;
+        }
+
+        $event->data['name'] = $lang['btn_secedit'] . ' - Codeblock';
     }
 
 }

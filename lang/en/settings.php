@@ -8,5 +8,6 @@
  * English language file
  */
 
-$lang['skin']           = 'color theme for highlightjs';
+$lang['skin']           = 'color theme for highlightjs'; 
+$lang['editbutton']     = 'Adds an edit button to each codeblock defined when the <code>code</code> and <code>file</code> tags are used.';
 

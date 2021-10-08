@@ -7,4 +7,5 @@
  */
 
 $meta['skin']           = array('string');
+$meta['editbutton']     = array('onoff');
 
