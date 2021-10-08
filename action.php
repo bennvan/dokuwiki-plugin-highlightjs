@@ -40,8 +40,8 @@ class action_plugin_codehighlightjs extends DokuWiki_Action_Plugin
             'type' => 'format',
             'title' => 'Insert code inline',
             'icon' => '../../plugins/codehighlightjs/images/inline-button.png',
-            'open' => "''",
-            'close' => "''",
+            'open' => "''%%",
+            'close' => "%%''",
         );
     }
 
