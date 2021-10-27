@@ -6,5 +6,5 @@
  * @author Ben van Magill <ben.vanmagill16@gmail.com>
  */
 
-$conf['skin']           = 'monokai-sublime';
+$conf['skin']           = 'stackoverflow-light';
 $conf['editbutton']     = 1;

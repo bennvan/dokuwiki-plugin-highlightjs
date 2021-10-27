@@ -2,7 +2,7 @@
  * DokuWiki Plugin Code HighlightJS
  */
 
-pre.code, pre.file { display: block; background-color: #23241f; color: #f8f8f2; }
+pre.code, pre.file { display: block; background-color: #eee; color: #2f3337; }
 
 div.code-title {
     margin-bottom: 0;
@@ -56,7 +56,7 @@ pre.prettyprint.copied:before {
    z-index: 100;
    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
    font-size: 13px;
-   background: #000;
+   background: #2f3337;
    padding: 0 2px;
    border-radius: 3px;
 }
@@ -76,7 +76,7 @@ div.codeclipboard_button {
  right: 5px;
  top: 5px;
  z-index: 100;
- background: url('/lib/tpl/bootstrap3/iconify.php?icon=mdi-content-copy.svg&color=%23fff');
+ background: url('/lib/tpl/bootstrap3/iconify.php?icon=mdi-content-copy.svg&color=%23000');
  background-size: cover;
  opacity: 0;
  transition: 0.2s ease-in-out;
