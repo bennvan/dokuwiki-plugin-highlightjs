@@ -14,7 +14,7 @@ function initHighlightJS(event){
             btn.classList.add('codeclipboard_button');
             var parent = elmt.parentElement;
             var wrapper;
-            if (parent.className == 'code-toolbar'){
+            if (parent.classList.contains('code-toolbar')) {
                 wrapper = true;
             } else {
                 wrapper = false;
