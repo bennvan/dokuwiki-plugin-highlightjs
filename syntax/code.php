@@ -113,16 +113,17 @@ class syntax_plugin_codehighlightjs_code extends DokuWiki_Syntax_Plugin
         } 
         
         /** @var Doku_Renderer_xhtml $renderer */
-        if ($state == DOKU_LEXER_ENTER){
-            // Place the edit buttons
-            if ($this->getConf('editbutton') && defined('SEC_EDIT_PATTERN')) { // for DokuWiki Greebo and more recent versions
-                $renderer->startSectionEdit($pos, array('target' => 'plugin_codehighlightjs', 'name' => $state));
-            } else {
-                $renderer->startSectionEdit($pos, 'plugin_codehighlightjs', $state);
-            }
-        }
-
         if ($state == DOKU_LEXER_UNMATCHED) {
+            // Prepare the edit buttons
+            $secidclass = '';
+            if ($this->getConf('editbutton')) {
+                if  (defined('SEC_EDIT_PATTERN')) { // for DokuWiki Greebo and more recent versions
+                    $secidclass = $renderer->startSectionEdit($pos-strlen('<code'), array('target' => 'plugin_codehighlightjs', 'name' => $state));
+                } else {
+                    $secidclass = $renderer->startSectionEdit($pos-strlen('<code'), 'plugin_codehighlightjs', $state);
+                }
+            }
+
             $code_filename = $opts['filename'];
             if($code_filename) {
                 unset($opts['filename']);
@@ -153,7 +154,7 @@ class syntax_plugin_codehighlightjs_code extends DokuWiki_Syntax_Plugin
             }
 
             // start the toolbar and code
-            $markup .= '<div class="code-toolbar">';
+            $markup .= '<div class="code-toolbar '.$secidclass.'">';
             $markup .= '<pre class="'.hsc(implode(' ', $opts)).'">'.$renderer->_xmlEntities($text).'</pre>'.DOKU_LF;
             $markup .= '</div>';
 
