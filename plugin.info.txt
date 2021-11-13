@@ -1,6 +1,7 @@
 base   codehighlightjs
 author Ben van Magill
 email  <ben.vanmagill16@gmail.com>
-date   10-07-2021
+date   2021-11-13
 name   CodeHighlightJS
 desc   Replace syntax highlighting of code snippets with highlightjs
+url    https://github.com/bennvan/dokuwiki-plugin-highlightjs
