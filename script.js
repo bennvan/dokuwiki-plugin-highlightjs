@@ -39,8 +39,24 @@ function initHighlightJS(event){
                         elmt.classList.remove('copied');
                     }, 1000);
                 }
-                var txt = document.createElement('TEXTAREA');
-                txt.innerHTML = elmt.innerText;
+                var txt = document.createElement('TEXTAREA'),
+                // Remove any meta tags that shouldnt be copied (shell etc)
+                    child = elmt.firstChild,
+                    texts = [];
+
+                while (child) {
+                    if (child.nodeType == 3) {
+                        texts.push(child.data)
+                    }
+                    else if (!child.classList.contains("hljs-meta")) {
+                        texts.push(child.innerText);
+                    }
+                    child = child.nextSibling;
+                }
+
+                var text = texts.join("");
+
+                txt.innerHTML = text;
                 elmt.appendChild(txt);
                 txt.select();
                 document.execCommand('copy');
