@@ -40,23 +40,27 @@ function initHighlightJS(event){
                     }, 1000);
                 }
                 var txt = document.createElement('TEXTAREA'),
-                // Remove any meta tags that shouldnt be copied (shell etc)
+                // Remove any $ meta tags that shouldnt be copied in shell commands
                     child = elmt.firstChild,
-                    texts = [];
+                    texts = [],
+                    is_shell = elmt.classList.contains('language-shell');
 
-                while (child) {
-                    if (child.nodeType == 3) {
-                        texts.push(child.data)
+                if (is_shell) {
+                    while (child) {
+                        if (child.nodeType == 3) {
+                            texts.push(child.data);
+                        } 
+                        else if (!child.classList.contains("hljs-meta")) {
+                            texts.push(child.innerText);
+                        }
+                        child = child.nextSibling;
                     }
-                    else if (!child.classList.contains("hljs-meta")) {
-                        texts.push(child.innerText);
-                    }
-                    child = child.nextSibling;
+                    txt.innerHTML = texts.join("");
+
+                } else {
+                    txt.innerHTML = elmt.innerText;
                 }
 
-                var text = texts.join("");
-
-                txt.innerHTML = text;
                 elmt.appendChild(txt);
                 txt.select();
                 document.execCommand('copy');
