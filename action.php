@@ -102,6 +102,9 @@ class action_plugin_codehighlightjs extends DokuWiki_Action_Plugin
         }
 
         $event->data['name'] = $lang['btn_secedit'] . ' - Codeblock';
+
+        // Use wikitext editor
+        $event->data['target'] = 'section';
     }
 
 }
