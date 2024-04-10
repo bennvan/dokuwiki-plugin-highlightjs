@@ -8,9 +8,9 @@
  * usage: <code html nowrap [downloadfile.html] | Title > ... </Code>
  */
 
-if (!defined('DOKU_INC')) die();
+use dokuwiki\Extension\SyntaxPlugin;
 
-class syntax_plugin_codehighlightjs_code extends DokuWiki_Syntax_Plugin
+class syntax_plugin_codehighlightjs_code extends SyntaxPlugin
 {
     /** @var int counts the code and file blocks, used to provide download links */
     private static $_codeblock = 0;

@@ -7,12 +7,14 @@
  */
 
 // must be run within Dokuwiki
-if (!defined('DOKU_INC')) die();
+use dokuwiki\Extension\ActionPlugin;
+use dokuwiki\Extension\Event;
+use dokuwiki\Extension\EventHandler;
 
-class action_plugin_codehighlightjs extends DokuWiki_Action_Plugin
+class action_plugin_codehighlightjs extends ActionPlugin
 {
     // register hook
-    public function register(Doku_Event_Handler $controller)
+    public function register(EventHandler $controller)
     {
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'insert_button', array());
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'insert_button_inline', array());
@@ -24,7 +26,7 @@ class action_plugin_codehighlightjs extends DokuWiki_Action_Plugin
     /**
      * Insert a toolbar button
      */
-    public function insert_button(Doku_Event $event) {
+    public function insert_button(Event $event) {
         $event->data[] = array(
             'type' => 'format',
             'title' => 'Insert code',
@@ -37,7 +39,7 @@ class action_plugin_codehighlightjs extends DokuWiki_Action_Plugin
     /**
      * Insert a toolbar button
      */
-    public function insert_button_inline(Doku_Event $event) {
+    public function insert_button_inline(Event $event) {
         $event->data[] = array(
             'type' => 'format',
             'title' => 'Insert code inline',
@@ -50,7 +52,7 @@ class action_plugin_codehighlightjs extends DokuWiki_Action_Plugin
     /**
      * register highlightjs script and css
      */
-    public function load_highlightjs(Doku_Event $event, $param) {
+    public function load_highlightjs(Event $event) {
         $base_url = DOKU_BASE.'/lib/plugins/codehighlightjs/highlight/';
 
         $event->data['script'][] = [
@@ -77,7 +79,7 @@ class action_plugin_codehighlightjs extends DokuWiki_Action_Plugin
      *
      * @param  Doku_Event  &$event
      */
-    public function _editform(Doku_Event $event)
+    public function _editform(Event $event)
     {
 
         if ($event->data['target'] !== 'plugin_codehighlightjs') {
@@ -93,7 +95,7 @@ class action_plugin_codehighlightjs extends DokuWiki_Action_Plugin
      *
      * @param  Doku_Event  &$event
      */
-    public function _secedit_button(Doku_Event $event)
+    public function _secedit_button(Event $event)
     {
         global $lang;
 

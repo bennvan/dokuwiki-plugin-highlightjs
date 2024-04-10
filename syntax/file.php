@@ -8,8 +8,6 @@
  * usage: <file html nowrap [downloadfile.html] | Title > ... </file>
  */
 
-if (!defined('DOKU_INC')) die();
-
 class syntax_plugin_codehighlightjs_file extends syntax_plugin_codehighlightjs_code
 {
     public function connectTo($mode)
