@@ -51,9 +51,12 @@ class syntax_plugin_codehighlightjs_code extends SyntaxPlugin
      */
     public function handle($match, $state, $pos, Doku_Handler $handler)
     {
+        $opts = [];
+        $text = '';
+
         if ($state == DOKU_LEXER_UNMATCHED) {
-                $matches = explode('>',$match,2);
-                list($params, $title) = explode('|', $matches[0], 2);
+                $matches = array_pad(explode('>', $match, 2), 2, '');
+                list($params, $title) = array_pad(explode('|', $matches[0], 2), 2, '');
 
                 if ($title) {
                     $opts['title'] = $title;
@@ -99,6 +102,7 @@ class syntax_plugin_codehighlightjs_code extends SyntaxPlugin
         if (empty($data)) return false;
 
         list($match, $state, $pos, $opts, $text) = $data;
+        $opts = $opts ?? [];
 
         /** @var Doku_Renderer_metadata $renderer */
         if ($mode !== 'xhtml'){
@@ -106,14 +110,14 @@ class syntax_plugin_codehighlightjs_code extends SyntaxPlugin
                 
             // }
             if ($state == DOKU_LEXER_UNMATCHED) {
-                $code_filename = $opts['filename'];
-                $renderer->file($text, null, $opts['filename']);
+                $renderer->file($text, null, $opts['filename'] ?? '');
             }
             return false;
         } 
         
         /** @var Doku_Renderer_xhtml $renderer */
         if ($state == DOKU_LEXER_UNMATCHED) {
+            $markup = '';
             // Prepare the edit buttons
             $secidclass = '';
             if ($this->getConf('editbutton')) {
@@ -124,7 +128,7 @@ class syntax_plugin_codehighlightjs_code extends SyntaxPlugin
                 }
             }
 
-            $code_filename = $opts['filename'];
+            $code_filename = $opts['filename'] ?? '';
             if($code_filename) {
                 unset($opts['filename']);
                 // add icon
@@ -148,7 +152,7 @@ class syntax_plugin_codehighlightjs_code extends SyntaxPlugin
             }
 
 
-            if ($opts['title']) {
+            if (!empty($opts['title'])) {
                 $markup .= '<div class="code-title">'.$opts['title'].DOKU_LF.'</div>';
                 unset($opts['title']);
             }
