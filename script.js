@@ -7,8 +7,13 @@ function initHighlightJS(event){
 
         // select all code blocks
         document.querySelectorAll('pre.code, pre.file, pre.hljs').forEach(elmt => {
+            if (elmt.dataset.codehighlightjsReady) return;
+            // Mort adds its copy button at DOM ready, before highlighting.
+            // It is UI, not source code; this plugin supplies its own button.
+            elmt.querySelectorAll(':scope > button.code-copy-btn').forEach(button => button.remove());
             // Highlight element
-            hljs.highlightElement(elmt);
+            if (!elmt.dataset.highlighted) hljs.highlightElement(elmt);
+            elmt.dataset.codehighlightjsReady = 'true';
             var btn = document.createElement("DIV");
             btn.title = 'Copy to Clipboard';
             btn.classList.add('codeclipboard_button');
@@ -55,10 +60,10 @@ function initHighlightJS(event){
                         }
                         child = child.nextSibling;
                     }
-                    txt.innerHTML = texts.join("");
+                    txt.value = texts.join("");
 
                 } else {
-                    txt.innerHTML = elmt.innerText;
+                    txt.value = elmt.innerText;
                 }
 
                 elmt.appendChild(txt);
